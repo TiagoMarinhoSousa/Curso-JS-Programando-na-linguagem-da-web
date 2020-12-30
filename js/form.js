@@ -9,13 +9,33 @@ botaoAdicionar.addEventListener("click", function(event){
     var paciente = obtemPacienteDoFormulario(form);
     //cria a tr do paciente
     var pacienteTr = montaTr(paciente);
+    //valida o paciente
+    var erros = validaPaciente(paciente);
+    if (erros.length > 0){
+        exibeMensagensDeErro(erros);        
+        return;
+    }
+
     //pega a tabela
     var tabela = document.querySelector("#tabela-pacientes");
     //inclui a tr criada no form dentro da tabela
     tabela.appendChild(pacienteTr);
     //apagar dados depois de enviar
     form.reset();
+    //apagar todas as mensagens de erro após incluir com sucesso
+    var mensagensErro = document.querySelector("#mensagens-erro");
+    mensagensErro.innerHTML = "";
 });
+
+function exibeMensagensDeErro(erros){
+    var ul = document.querySelector("#mensagens-erro");
+    ul.innerHTML = "";
+    erros.forEach(function(erro) {
+        var li = document.createElement("li");
+        li.textContent = erro;
+        ul.appendChild(li);
+    });
+}
 
 function obtemPacienteDoFormulario (form){
     var paciente = {
@@ -59,4 +79,28 @@ function montaTd(dado, classe){
     td.textContent = dado;
     td.classList.add(classe);
     return td;
+}
+
+function validaPaciente(paciente){
+    var erros = [];
+
+    if(paciente.nome.length == 0){
+        erros.push("O nome deve ser preenchido!");
+    }
+    if(!validaPeso(paciente.peso)){  
+        erros.push("Peso é inválido!");
+    }
+    if(!validaAltura(paciente.altura)){
+        erros.push("Altura é inválida!");
+    }
+    if(paciente.gordura.length == 0){
+        erros.push("A gordura deve ser preenchida!");
+    }
+    if(paciente.peso.length == 0){
+        erros.push("O peso deve ser preenchido!");
+    }    
+    if(paciente.altura.length == 0){
+        erros.push("A altura deve ser preenchida!");
+    }
+    return erros;
 }
